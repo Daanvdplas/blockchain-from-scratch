@@ -169,7 +169,8 @@ fn bc_4_child_block_empty() {
     let b0 = Block::genesis();
     let b1 = b0.child(vec![]);
 
-    assert!(b0.header.verify_child(&b1.header));
+    assert_eq!(b1.header.height, 1);
+    assert_eq!(b1.header.parent, hash(&b0.header));
     assert_eq!(
         b1,
         Block {
@@ -184,7 +185,8 @@ fn bc_4_child_block() {
     let b0 = Block::genesis();
     let b1 = b0.child(vec![1, 2, 3, 4, 5]);
 
-    assert!(b0.header.verify_child(&b1.header));
+    assert_eq!(b1.header.height, 1);
+    assert_eq!(b1.header.parent, hash(&b0.header));
     assert_eq!(
         b1,
         Block {
@@ -199,13 +201,15 @@ fn bc_4_child_header() {
     let g = Header::genesis();
     let h1 = g.child(hash(&[1, 2, 3]), 6);
 
-    assert!(g.verify_child(&h1));
+    assert_eq!(h1.height, 1);
+    assert_eq!(h1.parent, hash(&g));
     assert_eq!(h1.extrinsics_root, hash(&[1, 2, 3]));
     assert_eq!(h1.state, 6);
 
     let h2 = h1.child(hash(&[10, 20]), 36);
 
-    assert!(h1.verify_child(&h2));
+    assert_eq!(h2.height, 2);
+    assert_eq!(h2.parent, hash(&h1));
     assert_eq!(h2.extrinsics_root, hash(&[10, 20]));
     assert_eq!(h2.state, 36);
 }

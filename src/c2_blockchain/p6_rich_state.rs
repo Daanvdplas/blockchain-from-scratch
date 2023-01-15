@@ -206,7 +206,8 @@ fn bc_6_child_block_empty() {
     let b0 = Block::genesis(&state);
     let b1 = b0.child(&state, vec![]);
 
-    assert!(b0.header.verify_child(&b1.header));
+    assert_eq!(b1.header.height, 1);
+    assert_eq!(b1.header.parent, hash(&b0.header));
     assert_eq!(
         b1,
         Block {
@@ -222,7 +223,8 @@ fn bc_6_child_block() {
     let b0 = Block::genesis(&state);
     let b1 = b0.child(&state, vec![1, 2, 3, 4, 5]);
 
-    assert!(b0.header.verify_child(&b1.header));
+    assert_eq!(b1.header.height, 1);
+    assert_eq!(b1.header.parent, hash(&b0.header));
     assert_eq!(
         b1,
         Block {
@@ -244,7 +246,8 @@ fn bc_6_child_header() {
     }
     let h1 = g.child(hash(&extrinsics), hash(&state_1));
 
-    assert!(g.verify_child(&h1));
+    assert_eq!(h1.height, 1);
+    assert_eq!(h1.parent, hash(&g));
     assert_eq!(h1.extrinsics_root, hash(&extrinsics));
     assert_eq!(h1.state_root, hash(&state_1));
 
@@ -257,7 +260,8 @@ fn bc_6_child_header() {
 
     let h2 = h1.child(hash(&extrinsics), hash(&state_2));
 
-    assert!(h1.verify_child(&h2));
+    assert_eq!(h1.height, 1);
+    assert_eq!(h1.parent, hash(&g));
     assert_eq!(h2.extrinsics_root, hash(&extrinsics));
     assert_eq!(h2.state_root, hash(&state_2));
 }
